@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <link href="dist/output.css" rel="stylesheet" />
+    <link href="src/style.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="script/app.js"></script>
+  </head>
+  <body>
+    <!-- Navbar Section -->
+    <header class="fixed top-0 z-50 w-screen py-5 bg-white" x-data>
+      <div class="flex flex-col flex-wrap items-center mx-20 md:flex-row">
+        <nav class="flex flex-wrap items-center text-base lg:w-2/5 md:ml-auto">
+          <a class="font-semibold text-black hover:text-gray-900" href="#home"
+            >Home</a
+          >
+          <a
+            class="font-semibold text-black ms-5 me-5 hover:text-gray-900"
+            href="#order"
+            >Order</a
+          >
+          <a
+            class="font-semibold text-black hover:text-gray-900"
+            href="#promotion"
+            >Promotion</a
+          >
+        </nav>
+        <a
+          class="flex items-center order-first mb-4 font-medium text-gray-900 lg:order-none lg:w-1/5 title-font lg:items-center lg:justify-center md:mb-0">
+          <img src="assets/burger copy.svg" alt="" />
+          <span class="ml-3 text-2xl font-bold text-black">ORDER MEAL</span>
+        </a>
+        <div class="inline-flex lg:w-2/5 lg:justify-end lg:ml-0">
+          <div class="flex justify-center space-x-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-search"
+              viewBox="0 0 16 16">
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg>
+            <div class="relative flex items-baseline">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-cart3"
+                onclick="toggleNav()"
+                viewBox="0 0 16 16">
+                <path
+                  d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" /></svg
+              ><span
+                class="absolute font-medium text-center rounded-full left-3 top-2"
+                style="
+                  font-size: 0.6rem;
+                  background-color: red;
+                  padding: 1px 3px;
+                "
+                x-show="$store.cart.quantity"
+                x-text="$store.cart.quantity"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div
+      x-data
+      id="mySidebar"
+      class="fixed bottom-0 right-0 z-40 w-0 h-screen overflow-x-hidden bg-white sidebar">
+      <div class="mt-36 lg:mt-20">
+        <template x-for="(item,index) in $store.cart.items" x-keys="index"
+          ><div
+            id="cart-item"
+            class="flex py-5 ml-6 mr-6 border-b-2 border-b-black">
+            <img
+              :src="`assets/${item.img}`"
+              class="w-10 h-10 mr-3 rounded-full"
+              :alt="`item.name`" />
+            <div class="flex flex-col justify-center item-detail">
+              <div
+                class="text-base font-bold text-black"
+                x-text="item.name"></div>
+              <div class="font-bold text-black item-price">
+                <span class="mr-1 text-sm" x-text="rupiah(item.price)"></span>
+                &times;
+                <button
+                  class="px-2 ml-1 mr-3 text-white bg-black cursor-pointer"
+                  @click="$store.cart.remove(item.id)">
+                  &minus;
+                </button>
+                <span class="text-sm" x-text="item.quantity"></span>
+                <button
+                  class="px-2 ml-3 mr-1 text-white bg-black cursor-pointer"
+                  @click="$store.cart.add(item)">
+                  &plus;</button
+                >&equals;
+                <span class="text-sm" x-text="rupiah(item.total)"></span>
+              </div>
+            </div></div
+        ></template>
+        <p
+          class="text-black mt-2 text-lg text-center"
+          x-show="!$store.cart.items.length">
+          Tidak memiliki pesanan
+        </p>
+        <p
+          class="text-black ml-6 mt-2 font-medium"
+          x-show="$store.cart.items.length">
+          Total: <span x-text="rupiah($store.cart.total)"></span>
+        </p>
+
+        <div
+          id="form-container"
+          class="mx-6 mt-3"
+          x-show="$store.cart.items.length">
+          <p class="text-black mt-2 mb-2 font-bold text-center">
+            Customer detail
+          </p>
+          <div class="flex justify-center items-center mb-2">
+            <label
+              for="email"
+              class="block w-20 mr-2 text-base font-medium text-gray-900"
+              >Name</label
+            >
+            <input
+              type="text"
+              id="small-input"
+              class="block w-full p-2 text-black border border-black bg-white sm:text-xs" />
+          </div>
+          <div class="flex justify-center items-center mb-2">
+            <label
+              for="email"
+              class="block w-20 mr-2 text-base font-medium text-gray-900"
+              >Phone</label
+            >
+            <input
+              type="text"
+              id="small-input"
+              class="block w-full p-2 text-black border border-black bg-white sm:text-xs" />
+          </div>
+          <div class="flex justify-center items-center mb-2">
+            <label
+              for="email"
+              class="block w-20 mr-2 text-base font-medium text-gray-900"
+              >Address</label
+            >
+            <input
+              type="text"
+              id="small-input"
+              class="block w-full p-2 text-black border border-black bg-white sm:text-xs" />
+          </div>
+          <button
+            type="button"
+            class="text-white bg-black hover:bg-black focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mt-3 me-2 mb-2 drop-shadow-lg">
+            Explore Menu
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Navbar Section -->
+
+    <!-- Hero Section -->
+    <main
+      id="home"
+      class="bg-[url('/assets/bg-1.jpg')] bg-fixed bg-cover"
+      style="height: 150vh">
+      <section class="mx-20">
+        <div class="flex flex-wrap items-end justify-between">
+          <div class="text-left">
+            <h1
+              class="pt-36 lg:pt-20 text-white text-5xl lg:text-8xl drop-shadow-lg">
+              order food <br />to your door
+            </h1>
+          </div>
+          <div class="w-2/4 lg:w-1/4 text-left">
+            <h4
+              class="text-3xl lg:text-5xl font-medium text-white drop-shadow-lg">
+              12k+
+            </h4>
+            <p
+              class="w-4/5 text-sm font-semibold text-white drop-shadow-lg opacity-70">
+              Users using our services
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center justify-between mt-32">
+          <div class="text-left" style="width: 510px">
+            <p class="text-xl font-bold text-white uppercase drop-shadow-lg">
+              find your favorite dish
+            </p>
+            <p
+              class="w-3/5 mt-2 mb-5 text-sm font-semibold text-white drop-shadow-lg opacity-70">
+              Discover culinary delights and find your favorite dish with our
+              swift and savory food delivery service
+            </p>
+            <button
+              type="button"
+              class="text-white bg-white hover:bg-black focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 drop-shadow-lg dark:text-black dark:bg-white dark:hover:bg-black hover:text-white">
+              Explore Menu
+            </button>
+          </div>
+          <div class="w-1/4 text-left">
+            <p
+              class="mt-2 mb-5 text-sm font-semibold text-white drop-shadow-lg opacity-70">
+              With order meal, get your food delivered to your doorstep within
+              an hour!
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Hero Section -->
+
+    <!-- Order Section -->
+    <main
+      id="order"
+      class="absolute z-20 w-full lg:top-full"
+      x-data="products"
+      style="top: 90%">
+      <svg
+        class="relative top-1"
+        id="wave"
+        style="transform: rotate(0deg)"
+        viewBox="0 0 1440 100"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="100%"></stop>
+          </linearGradient>
+        </defs>
+        <path
+          style="transform: translate(0, 0px); opacity: 1"
+          fill="url(#sw-gradient-0)"
+          d="M0,90L26.7,76.7C53.3,63,107,37,160,23.3C213.3,10,267,10,320,16.7C373.3,23,427,37,480,40C533.3,43,587,37,640,36.7C693.3,37,747,43,800,41.7C853.3,40,907,30,960,23.3C1013.3,17,1067,13,1120,16.7C1173.3,20,1227,30,1280,38.3C1333.3,47,1387,53,1440,48.3C1493.3,43,1547,27,1600,30C1653.3,33,1707,57,1760,60C1813.3,63,1867,47,1920,35C1973.3,23,2027,17,2080,25C2133.3,33,2187,57,2240,56.7C2293.3,57,2347,33,2400,20C2453.3,7,2507,3,2560,16.7C2613.3,30,2667,60,2720,75C2773.3,90,2827,90,2880,88.3C2933.3,87,2987,83,3040,75C3093.3,67,3147,53,3200,51.7C3253.3,50,3307,60,3360,66.7C3413.3,73,3467,77,3520,75C3573.3,73,3627,67,3680,55C3733.3,43,3787,27,3813,18.3L3840,10L3840,100L3813.3,100C3786.7,100,3733,100,3680,100C3626.7,100,3573,100,3520,100C3466.7,100,3413,100,3360,100C3306.7,100,3253,100,3200,100C3146.7,100,3093,100,3040,100C2986.7,100,2933,100,2880,100C2826.7,100,2773,100,2720,100C2666.7,100,2613,100,2560,100C2506.7,100,2453,100,2400,100C2346.7,100,2293,100,2240,100C2186.7,100,2133,100,2080,100C2026.7,100,1973,100,1920,100C1866.7,100,1813,100,1760,100C1706.7,100,1653,100,1600,100C1546.7,100,1493,100,1440,100C1386.7,100,1333,100,1280,100C1226.7,100,1173,100,1120,100C1066.7,100,1013,100,960,100C906.7,100,853,100,800,100C746.7,100,693,100,640,100C586.7,100,533,100,480,100C426.7,100,373,100,320,100C266.7,100,213,100,160,100C106.7,100,53,100,27,100L0,100Z"></path>
+      </svg>
+      <section class="bg-white">
+        <div class="py-24">
+          <div class="flex flex-wrap justify-center">
+            <template x-for="(item,index) in items" x-key="index"
+              ><div
+                class="w-2/5 p-2 mx-1 my-1 border-2 border-black rounded lg:w-1/5 md:w-1/4 sm:w-1/3">
+                <a class="relative block h-48 overflow-hidden rounded">
+                  <img
+                    :alt="`item.name`"
+                    class="block object-cover object-center w-full h-full"
+                    :src="`assets/${item.img}`" />
+                </a>
+                <div class="mt-4">
+                  <h3
+                    class="mb-1 text-xs tracking-widest text-gray-500 title-font">
+                    CATEGORY
+                  </h3>
+                  <h2
+                    x-text="item.name"
+                    class="text-lg font-medium text-gray-900 title-font"></h2>
+                  <p class="mt-1"><span x-text="rupiah(item.price)"></span></p>
+                  <button
+                    @click.prevent="$store.cart.add(item)"
+                    id="order"
+                    class="flex justify-center w-full px-8 py-2 mx-auto text-lg font-bold border-0 rounded focus:outline-none">
+                    Order
+                  </button>
+                </div>
+              </div></template
+            >
+          </div>
+        </div>
+      </section>
+      <svg
+        id="wave"
+        style="transform: rotate(180deg); transition: 0.3s"
+        viewBox="0 0 1440 100"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="0%"></stop>
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="100%"></stop>
+          </linearGradient>
+        </defs>
+        <path
+          style="transform: translate(0, 0px); opacity: 1"
+          fill="url(#sw-gradient-0)"
+          d="M0,90L26.7,76.7C53.3,63,107,37,160,23.3C213.3,10,267,10,320,16.7C373.3,23,427,37,480,40C533.3,43,587,37,640,36.7C693.3,37,747,43,800,41.7C853.3,40,907,30,960,23.3C1013.3,17,1067,13,1120,16.7C1173.3,20,1227,30,1280,38.3C1333.3,47,1387,53,1440,48.3C1493.3,43,1547,27,1600,30C1653.3,33,1707,57,1760,60C1813.3,63,1867,47,1920,35C1973.3,23,2027,17,2080,25C2133.3,33,2187,57,2240,56.7C2293.3,57,2347,33,2400,20C2453.3,7,2507,3,2560,16.7C2613.3,30,2667,60,2720,75C2773.3,90,2827,90,2880,88.3C2933.3,87,2987,83,3040,75C3093.3,67,3147,53,3200,51.7C3253.3,50,3307,60,3360,66.7C3413.3,73,3467,77,3520,75C3573.3,73,3627,67,3680,55C3733.3,43,3787,27,3813,18.3L3840,10L3840,100L3813.3,100C3786.7,100,3733,100,3680,100C3626.7,100,3573,100,3520,100C3466.7,100,3413,100,3360,100C3306.7,100,3253,100,3200,100C3146.7,100,3093,100,3040,100C2986.7,100,2933,100,2880,100C2826.7,100,2773,100,2720,100C2666.7,100,2613,100,2560,100C2506.7,100,2453,100,2400,100C2346.7,100,2293,100,2240,100C2186.7,100,2133,100,2080,100C2026.7,100,1973,100,1920,100C1866.7,100,1813,100,1760,100C1706.7,100,1653,100,1600,100C1546.7,100,1493,100,1440,100C1386.7,100,1333,100,1280,100C1226.7,100,1173,100,1120,100C1066.7,100,1013,100,960,100C906.7,100,853,100,800,100C746.7,100,693,100,640,100C586.7,100,533,100,480,100C426.7,100,373,100,320,100C266.7,100,213,100,160,100C106.7,100,53,100,27,100L0,100Z"></path>
+      </svg>
+    </main>
+    <!-- Order Section -->
+
+    <!--  Section -->
+    <main
+      class="bg-[url('/assets/bg-2.jpg')] bg-fixed bg-cover"
+      style="margin-top: 40rem; height: 140vh">
+      <section class="mx-20">
+        <div class="flex flex-wrap items-center justify-between">
+          <div class="text-left">
+            <h1 class="text-white text-5xl lg:text-8xl mt-72 drop-shadow-lg">
+              order food <br />to your door
+            </h1>
+            <div class="flex items-center">
+              <img
+                class="w-16 h-16 border-2 border-white rounded-full"
+                src="assets/burger.jpeg"
+                alt="" />
+              <p
+                class="w-3/5 ml-3 text-sm font-semibold text-white drop-shadow-lg opacity-70">
+                Discover culinary delights and find your favorite dish with our
+                swift and savory food delivery service
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="text-white bg-white hover:bg-black focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mt-4 drop-shadow-lg dark:text-black dark:bg-white dark:hover:bg-black hover:text-white">
+              Explore Menu
+            </button>
+          </div>
+          <div class="mb-64 text-left w-96">
+            <h4 class="text-5xl font-bold text-right text-white drop-shadow-lg">
+              Enjoy Burgers at home
+            </h4>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Section -->
+
+    <!-- Food Carousel -->
+    <main id="food-carousel" class="absolute z-20 w-full" style="top: 140rem">
+      <svg
+        class="relative top-1"
+        id="wave"
+        style="transform: rotate(0deg)"
+        viewBox="0 0 1440 100"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="100%"></stop>
+          </linearGradient>
+        </defs>
+        <path
+          style="transform: translate(0, 0px); opacity: 1"
+          fill="url(#sw-gradient-0)"
+          d="M0,90L26.7,76.7C53.3,63,107,37,160,23.3C213.3,10,267,10,320,16.7C373.3,23,427,37,480,40C533.3,43,587,37,640,36.7C693.3,37,747,43,800,41.7C853.3,40,907,30,960,23.3C1013.3,17,1067,13,1120,16.7C1173.3,20,1227,30,1280,38.3C1333.3,47,1387,53,1440,48.3C1493.3,43,1547,27,1600,30C1653.3,33,1707,57,1760,60C1813.3,63,1867,47,1920,35C1973.3,23,2027,17,2080,25C2133.3,33,2187,57,2240,56.7C2293.3,57,2347,33,2400,20C2453.3,7,2507,3,2560,16.7C2613.3,30,2667,60,2720,75C2773.3,90,2827,90,2880,88.3C2933.3,87,2987,83,3040,75C3093.3,67,3147,53,3200,51.7C3253.3,50,3307,60,3360,66.7C3413.3,73,3467,77,3520,75C3573.3,73,3627,67,3680,55C3733.3,43,3787,27,3813,18.3L3840,10L3840,100L3813.3,100C3786.7,100,3733,100,3680,100C3626.7,100,3573,100,3520,100C3466.7,100,3413,100,3360,100C3306.7,100,3253,100,3200,100C3146.7,100,3093,100,3040,100C2986.7,100,2933,100,2880,100C2826.7,100,2773,100,2720,100C2666.7,100,2613,100,2560,100C2506.7,100,2453,100,2400,100C2346.7,100,2293,100,2240,100C2186.7,100,2133,100,2080,100C2026.7,100,1973,100,1920,100C1866.7,100,1813,100,1760,100C1706.7,100,1653,100,1600,100C1546.7,100,1493,100,1440,100C1386.7,100,1333,100,1280,100C1226.7,100,1173,100,1120,100C1066.7,100,1013,100,960,100C906.7,100,853,100,800,100C746.7,100,693,100,640,100C586.7,100,533,100,480,100C426.7,100,373,100,320,100C266.7,100,213,100,160,100C106.7,100,53,100,27,100L0,100Z"></path>
+      </svg>
+      <section class="py-10 bg-white">
+        <div
+          class="relative flex items-center w-full wrap"
+          style="height: 70vh">
+          <div class="absolute slide-container">
+            <ul class="flex flex-row slides flex-nowrap">
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/burger.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/hotdog.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/fries.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/wedges.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/nuggets.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/onion.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/quesadilla.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <span
+                    ><img
+                      class="object-cover w-64 shadow-lg rounded-3xl h-72"
+                      src="assets/sandwich.jpeg"
+                      alt=""
+                  /></span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <svg
+        id="wave"
+        style="transform: rotate(180deg); transition: 0.3s"
+        viewBox="0 0 1440 100"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="0%"></stop>
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="100%"></stop>
+          </linearGradient>
+        </defs>
+        <path
+          style="transform: translate(0, 0px); opacity: 1"
+          fill="url(#sw-gradient-0)"
+          d="M0,90L26.7,76.7C53.3,63,107,37,160,23.3C213.3,10,267,10,320,16.7C373.3,23,427,37,480,40C533.3,43,587,37,640,36.7C693.3,37,747,43,800,41.7C853.3,40,907,30,960,23.3C1013.3,17,1067,13,1120,16.7C1173.3,20,1227,30,1280,38.3C1333.3,47,1387,53,1440,48.3C1493.3,43,1547,27,1600,30C1653.3,33,1707,57,1760,60C1813.3,63,1867,47,1920,35C1973.3,23,2027,17,2080,25C2133.3,33,2187,57,2240,56.7C2293.3,57,2347,33,2400,20C2453.3,7,2507,3,2560,16.7C2613.3,30,2667,60,2720,75C2773.3,90,2827,90,2880,88.3C2933.3,87,2987,83,3040,75C3093.3,67,3147,53,3200,51.7C3253.3,50,3307,60,3360,66.7C3413.3,73,3467,77,3520,75C3573.3,73,3627,67,3680,55C3733.3,43,3787,27,3813,18.3L3840,10L3840,100L3813.3,100C3786.7,100,3733,100,3680,100C3626.7,100,3573,100,3520,100C3466.7,100,3413,100,3360,100C3306.7,100,3253,100,3200,100C3146.7,100,3093,100,3040,100C2986.7,100,2933,100,2880,100C2826.7,100,2773,100,2720,100C2666.7,100,2613,100,2560,100C2506.7,100,2453,100,2400,100C2346.7,100,2293,100,2240,100C2186.7,100,2133,100,2080,100C2026.7,100,1973,100,1920,100C1866.7,100,1813,100,1760,100C1706.7,100,1653,100,1600,100C1546.7,100,1493,100,1440,100C1386.7,100,1333,100,1280,100C1226.7,100,1173,100,1120,100C1066.7,100,1013,100,960,100C906.7,100,853,100,800,100C746.7,100,693,100,640,100C586.7,100,533,100,480,100C426.7,100,373,100,320,100C266.7,100,213,100,160,100C106.7,100,53,100,27,100L0,100Z"></path>
+      </svg>
+    </main>
+    <!-- Food Carousel -->
+
+    <!-- Promotion Section -->
+    <main
+      id="promotion"
+      class="bg-black pt-14"
+      style="margin-top: 28rem; height: 140vh">
+      <section class="py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-20 h-96">
+          <!-- Kolom 1 -->
+          <div class="w-96">
+            <h2 class="mb-10 text-5xl text-white drop-shadow-lg">
+              get your food in less than an hour
+            </h2>
+            <div
+              class="ml-16"
+              style="border-left: 1px solid grey; height: 150px">
+              <p class="mb-5 ml-5 text-sm font-medium text-gray-100 opacity-70">
+                Craving delicious meals without the hassle of cooking orleaving
+                your home? Look no further than OrderMeal your go-to food
+                deliveryfor satisfying your craving with just a few tops.
+              </p>
+              <button
+                type="button"
+                class="text-black ml-5 bg-black hover:bg-black focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 drop-shadow-lg dark:text-black dark:bg-white dark:hover:bg-white hover:text-black">
+                Explore Menu
+              </button>
+            </div>
+          </div>
+
+          <!-- Kolom 2 -->
+
+          <div class="flex w-96">
+            <div style="border-left: 1px solid grey; height: 400px">
+              <h4 class="ml-5 text-4xl font-bold text-gray-100">01</h4>
+              <h4 class="ml-5 text-4xl font-bold text-white">
+                SELECT YOUR FOOD
+              </h4>
+              <p class="ml-5 text-sm font-medium text-gray-100 opacity-70">
+                Just choose the food you want.
+              </p>
+            </div>
+
+            <img
+              class="object-cover w-24 rounded-full shadow-lg h-96"
+              src="assets/order.jpg"
+              alt="" />
+          </div>
+
+          <!-- Kolom 3 -->
+          <div class="flex w-96">
+            <div style="border-left: 1px solid grey; height: 400px">
+              <h4 class="ml-5 text-4xl font-bold text-gray-100">02</h4>
+              <h4 class="ml-5 text-4xl font-bold text-white">fill the form</h4>
+              <p class="ml-5 text-sm font-medium text-gray-100 opacity-70">
+                Just choose the food you want.
+              </p>
+              <h4 class="mt-5 ml-5 text-4xl font-bold text-gray-100">03</h4>
+              <h4 class="ml-5 text-4xl font-bold text-white">
+                confirm the payment
+              </h4>
+              <p class="ml-5 text-sm font-medium text-gray-100 opacity-70">
+                Just choose the food you want.
+              </p>
+            </div>
+
+            <img
+              class="object-cover w-24 rounded-full shadow-lg h-96"
+              src="assets/order2.jpg"
+              alt="" />
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Promotion Section -->
+
+    <!--  Section -->
+    <main class="absolute z-20 w-full" style="top: 217rem">
+      <svg
+        class="relative top-1"
+        id="wave"
+        style="transform: rotate(0deg)"
+        viewBox="0 0 1440 100"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="100%"></stop>
+          </linearGradient>
+        </defs>
+        <path
+          style="transform: translate(0, 0px); opacity: 1"
+          fill="url(#sw-gradient-0)"
+          d="M0,90L26.7,76.7C53.3,63,107,37,160,23.3C213.3,10,267,10,320,16.7C373.3,23,427,37,480,40C533.3,43,587,37,640,36.7C693.3,37,747,43,800,41.7C853.3,40,907,30,960,23.3C1013.3,17,1067,13,1120,16.7C1173.3,20,1227,30,1280,38.3C1333.3,47,1387,53,1440,48.3C1493.3,43,1547,27,1600,30C1653.3,33,1707,57,1760,60C1813.3,63,1867,47,1920,35C1973.3,23,2027,17,2080,25C2133.3,33,2187,57,2240,56.7C2293.3,57,2347,33,2400,20C2453.3,7,2507,3,2560,16.7C2613.3,30,2667,60,2720,75C2773.3,90,2827,90,2880,88.3C2933.3,87,2987,83,3040,75C3093.3,67,3147,53,3200,51.7C3253.3,50,3307,60,3360,66.7C3413.3,73,3467,77,3520,75C3573.3,73,3627,67,3680,55C3733.3,43,3787,27,3813,18.3L3840,10L3840,100L3813.3,100C3786.7,100,3733,100,3680,100C3626.7,100,3573,100,3520,100C3466.7,100,3413,100,3360,100C3306.7,100,3253,100,3200,100C3146.7,100,3093,100,3040,100C2986.7,100,2933,100,2880,100C2826.7,100,2773,100,2720,100C2666.7,100,2613,100,2560,100C2506.7,100,2453,100,2400,100C2346.7,100,2293,100,2240,100C2186.7,100,2133,100,2080,100C2026.7,100,1973,100,1920,100C1866.7,100,1813,100,1760,100C1706.7,100,1653,100,1600,100C1546.7,100,1493,100,1440,100C1386.7,100,1333,100,1280,100C1226.7,100,1173,100,1120,100C1066.7,100,1013,100,960,100C906.7,100,853,100,800,100C746.7,100,693,100,640,100C586.7,100,533,100,480,100C426.7,100,373,100,320,100C266.7,100,213,100,160,100C106.7,100,53,100,27,100L0,100Z"></path>
+      </svg>
+      <section class="py-10 bg-white">
+        <h1 class="mb-10 text-center text-black text-8xl drop-shadow-lg">
+          why we are best
+        </h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-20 h-96">
+          <!-- Kolom 1 -->
+          <div class="w-96">
+            <h2 class="mb-10 text-5xl text-black drop-shadow-lg">
+              get your food in less than an hour
+            </h2>
+            <div
+              class="ml-16"
+              style="border-left: 1px solid grey; height: 150px">
+              <p class="mb-5 ml-5 text-sm font-medium opacity-70">
+                Craving delicious meals without the hassle of cooking orleaving
+                your home? Look no further than OrderMeal your go-to food
+                deliveryfor satisfying your craving with just a few tops.
+              </p>
+              <button
+                type="button"
+                class="text-black ml-5 bg-black hover:bg-black focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 drop-shadow-lg dark:text-white dark:bg-black dark:hover:bg-black hover:text-white">
+                Explore Menu
+              </button>
+            </div>
+          </div>
+
+          <!-- Kolom 2 -->
+
+          <div class="flex items-center justify-center w-96">
+            <img
+              class="object-cover w-48 rounded-full shadow-lg h-96"
+              src="assets/order.jpg"
+              alt="" />
+          </div>
+
+          <!-- Kolom 3 -->
+          <div class="flex w-96">
+            <div>
+              <h4 class="ml-5 text-4xl font-bold text-gray-500">02</h4>
+              <h4 class="ml-5 text-4xl font-bold text-black">fill the form</h4>
+              <p class="ml-5 text-sm font-medium opacity-70">
+                Just choose the food you want.
+              </p>
+              <h4 class="mt-5 ml-5 text-4xl font-bold text-gray-500">03</h4>
+              <h4 class="ml-5 text-4xl font-bold text-black">
+                confirm the payment
+              </h4>
+              <p class="ml-5 text-sm font-medium opacity-70">
+                Just choose the food you want.
+              </p>
+            </div>
+
+            <img
+              class="object-cover w-24 rounded-full shadow-lg h-96"
+              src="assets/order2.jpg"
+              alt="" />
+          </div>
+        </div>
+      </section>
+      <svg
+        id="wave"
+        style="transform: rotate(180deg); transition: 0.3s"
+        viewBox="0 0 1440 100"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="0%"></stop>
+            <stop stop-color="rgba(255, 255, 255, 1)" offset="100%"></stop>
+          </linearGradient>
+        </defs>
+        <path
+          style="transform: translate(0, 0px); opacity: 1"
+          fill="url(#sw-gradient-0)"
+          d="M0,90L26.7,76.7C53.3,63,107,37,160,23.3C213.3,10,267,10,320,16.7C373.3,23,427,37,480,40C533.3,43,587,37,640,36.7C693.3,37,747,43,800,41.7C853.3,40,907,30,960,23.3C1013.3,17,1067,13,1120,16.7C1173.3,20,1227,30,1280,38.3C1333.3,47,1387,53,1440,48.3C1493.3,43,1547,27,1600,30C1653.3,33,1707,57,1760,60C1813.3,63,1867,47,1920,35C1973.3,23,2027,17,2080,25C2133.3,33,2187,57,2240,56.7C2293.3,57,2347,33,2400,20C2453.3,7,2507,3,2560,16.7C2613.3,30,2667,60,2720,75C2773.3,90,2827,90,2880,88.3C2933.3,87,2987,83,3040,75C3093.3,67,3147,53,3200,51.7C3253.3,50,3307,60,3360,66.7C3413.3,73,3467,77,3520,75C3573.3,73,3627,67,3680,55C3733.3,43,3787,27,3813,18.3L3840,10L3840,100L3813.3,100C3786.7,100,3733,100,3680,100C3626.7,100,3573,100,3520,100C3466.7,100,3413,100,3360,100C3306.7,100,3253,100,3200,100C3146.7,100,3093,100,3040,100C2986.7,100,2933,100,2880,100C2826.7,100,2773,100,2720,100C2666.7,100,2613,100,2560,100C2506.7,100,2453,100,2400,100C2346.7,100,2293,100,2240,100C2186.7,100,2133,100,2080,100C2026.7,100,1973,100,1920,100C1866.7,100,1813,100,1760,100C1706.7,100,1653,100,1600,100C1546.7,100,1493,100,1440,100C1386.7,100,1333,100,1280,100C1226.7,100,1173,100,1120,100C1066.7,100,1013,100,960,100C906.7,100,853,100,800,100C746.7,100,693,100,640,100C586.7,100,533,100,480,100C426.7,100,373,100,320,100C266.7,100,213,100,160,100C106.7,100,53,100,27,100L0,100Z"></path>
+      </svg>
+    </main>
+    <!--  Section -->
+
+    <!-- Footer Section -->
+    <footer class="h-14" style="margin-top: 28rem">
+      <div class="flex flex-col flex-wrap items-center mx-20 md:flex-row">
+        <nav class="flex flex-wrap items-center text-base lg:w-2/5 md:ml-auto">
+          <a class="font-semibold text-white hover:text-gray-200" href="#home"
+            >Home</a
+          >
+          <a
+            class="font-semibold text-white ms-5 me-5 hover:text-gray-200"
+            href="#order"
+            >Order</a
+          >
+          <a
+            class="font-semibold text-white hover:text-gray-200"
+            href="#promotion"
+            >Promotion</a
+          >
+        </nav>
+        <a
+          class="flex items-center order-first font-medium text-gray-900 lg:order-none lg:w-1/5 title-font lg:items-center lg:justify-center md:mb-0">
+          <img src="assets/burger.svg" alt="" />
+          <span class="ml-3 text-2xl font-bold text-white">ORDER MEAL</span>
+        </a>
+        <div class="inline-flex lg:w-2/5 lg:justify-end lg:ml-0">
+          <div class="flex justify-center space-x-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="#ffffff"
+              class="bi bi-search"
+              viewBox="0 0 16 16">
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="#ffffff"
+              class="bi bi-cart3"
+              viewBox="0 0 16 16">
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- Footer Section -->
+    <script
+      src="https://code.jquery.com/jquery-2.2.0.min.js"
+      type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $slides = $(".slides");
+        $slides.bind("contentchanged", function () {
+          animate($slides);
+        });
+        animate($slides);
+      });
+
+      function animate($slides) {
+        var slidesLength = $slides.find("li").length;
+        if (slidesLength > 3) {
+          $slides.find("li:nth-last-child(-n+3)").clone().prependTo($slides);
+          $slides.addClass("animate");
+          $slides.css("animation-duration", slidesLength * 2 + "s");
+        }
+      }
+
+      //
+      function toggleNav() {
+        var sidebar = document.getElementById("mySidebar");
+
+        if (sidebar.style.width === "450px") {
+          sidebar.style.width = "0";
+        } else {
+          sidebar.style.width = "450px";
+        }
+      }
+    </script>
+  </body>
+
+  <!-- npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch -->
+</html>

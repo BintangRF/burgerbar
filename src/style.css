@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url("https://fonts.cdnfonts.com/css/caros");
+
+:root {
+  --myYellow: rgb(254, 208, 8);
+  --myOrange: rgb(246, 133, 53);
+  --myBlack: rgb(0, 0, 0);
+  --myWhite: rgb(255, 255, 255);
+  --myRed: rgb(185, 74, 67);
+}
+
+body {
+  background-color: var(--myBlack);
+  scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Bebas Neue";
+}
+
+h4,
+h5,
+p,
+a,
+span,
+button {
+  font-family: "Caros";
+}
+
+body,
+html {
+  margin: 0;
+  height: 100%;
+}
+
+.wrap {
+  overflow: hidden;
+}
+
+.animate {
+  animation: moveSlideshow 20s linear infinite;
+}
+
+@keyframes moveSlideshow {
+  100% {
+    transform: translate3d(calc(-100% + 100vw), 0, 0);
+  }
+}
+
+.slides li {
+  display: flex;
+  width: 20vw;
+  align-items: center;
+  justify-content: center;
+}
+
+.slides li > div {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  align-self: center;
+}
+
+button#order {
+  background-color: var(--myOrange);
+}
+
+.sidebar {
+  transition: 0.5s;
+}
+
+svg.bi-cart3 {
+  cursor: pointer;
+  border: none;
+}
