@@ -51,7 +51,7 @@ html {
 
 .slides li {
   display: flex;
-  width: 20vw;
+  width: 15vw;
   align-items: center;
   justify-content: center;
 }
