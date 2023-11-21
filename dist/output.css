@@ -840,6 +840,10 @@ video {
   margin-top: 13rem;
 }
 
+.mb-0 {
+  margin-bottom: 0px;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -1033,10 +1037,6 @@ video {
 
 .w-screen {
   width: 100vw;
-}
-
-.w-72 {
-  width: 18rem;
 }
 
 .flex-shrink {
@@ -2902,6 +2902,10 @@ video {
     margin-top: 18rem;
   }
 
+  .lg\:mb-20 {
+    margin-bottom: 5rem;
+  }
+
   .lg\:block {
     display: block;
   }
@@ -2916,10 +2920,6 @@ video {
 
   .lg\:w-2\/5 {
     width: 40%;
-  }
-
-  .lg\:w-96 {
-    width: 24rem;
   }
 
   .lg\:grid-cols-3 {
