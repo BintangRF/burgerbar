@@ -8,6 +8,9 @@
   --myWhite: rgb(255, 255, 255);
   --myRed: rgb(185, 74, 67);
 }
+* {
+  scroll-behavior: smooth;
+}
 
 body {
   background-color: var(--myBlack);
