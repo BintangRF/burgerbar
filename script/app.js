@@ -58,6 +58,29 @@ document.addEventListener("alpine:init", () => {
   });
 });
 
+// Payment Gateway
+const checkoutBtn = document.getElementById("checkoutBtn");
+const form = document.querySelector("#checkoutForm");
+
+checkoutBtn.addEventListener("click", async function (e) {
+  e.preventDefault();
+  const formData = new FormData(form);
+  const data = new URLSearchParams(formData);
+  const objData = Object.fromEntries(data);
+  console.log(objData);
+  try {
+    const response = await fetch("midtrans/midtrans.php", {
+      method: "POST",
+      body: data,
+    });
+    const token = await response.text();
+    console.log(token);
+    window.snap.pay(token);
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
 const rupiah = (number) => {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
