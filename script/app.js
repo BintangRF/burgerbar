@@ -58,6 +58,14 @@ document.addEventListener("alpine:init", () => {
   });
 });
 
+const rupiah = (number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(number);
+};
+
 // Payment Gateway
 const checkoutBtn = document.getElementById("checkoutBtn");
 const form = document.querySelector("#checkoutForm");
@@ -80,11 +88,3 @@ checkoutBtn.addEventListener("click", async function (e) {
     console.log(error.message);
   }
 });
-
-const rupiah = (number) => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(number);
-};
